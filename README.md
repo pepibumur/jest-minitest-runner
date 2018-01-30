@@ -1,6 +1,8 @@
 # Jest-Runner-Minitest
 
 [![Build Status](https://travis-ci.org/pepibumur/jest-runner-minitest.svg?branch=master)](https://travis-ci.org/pepibumur/jest-runner-minitest)
+[![Maintainability](https://api.codeclimate.com/v1/badges/35549ea45a68c031deb6/maintainability)](https://codeclimate.com/github/pepibumur/jest-runner-minitest/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/35549ea45a68c031deb6/test_coverage)](https://codeclimate.com/github/pepibumur/jest-runner-minitest/test_coverage)
 
 <img src="assets/Logo.jpg" width="300px"/>
 
