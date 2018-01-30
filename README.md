@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/pepibumur/jest-runner-minitest.svg?branch=master)](https://travis-ci.org/pepibumur/jest-runner-minitest)
 
-![logo](assets/Logo.jpg)
+<img src="assets/Logo.jpg" width="300px"/>
 
 A Jest runner that can be used to run your Ruby minitest tests.
 
