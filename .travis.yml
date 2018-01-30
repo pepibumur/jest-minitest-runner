@@ -1,0 +1,7 @@
+sudo: required
+services:
+  - docker
+before_install:
+  - docker build -t pepibumur/jest-runner-minitest .
+script:
+  - docker run pepibumur/jest-runner-minitest

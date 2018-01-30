@@ -8,12 +8,14 @@
   "license": "MIT",
   "scripts": {
     "dev": "tsc -w",
-    "build": "tsc"
+    "build": "tsc",
+    "test": "jest"
   },
   "devDependencies": {
     "@types/jest": "^22.1.1",
     "jest": "^22.1.4",
     "nodemon": "^1.14.11",
+    "prettier": "1.10.2",
     "ts-jest": "^22.0.1",
     "typescript": "^2.6.2"
   },
