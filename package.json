@@ -1,0 +1,31 @@
+{
+  "name": "jest-runner-minitest",
+  "version": "0.1.0",
+  "description": "A Jest runner that runs Ruby minitest tests",
+  "main": "index.js",
+  "repository": "git@github.com:pepibumur/jest-runner-minitest.git",
+  "author": "Pedro Piñera <pepibumur@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "tsc -w",
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@types/jest": "^22.1.1",
+    "jest": "^22.1.4",
+    "nodemon": "^1.14.11",
+    "ts-jest": "^22.0.1",
+    "typescript": "^2.6.2"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$"
+  }
+}
