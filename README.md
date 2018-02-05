@@ -28,7 +28,7 @@ npm install --save-dev jest jest-runner-minitest
 
 Add the following to your `package.json`:
 
-```
+```json
 "jest": {
 	"moduleFileExtensions": [
 	  "rb"
