@@ -71,3 +71,5 @@ If you are using vscode to work on this project, we'd recommend you to install t
 ## References
 
 * [jest-runner-go](https://github.com/MaximeHeckel/jest-runner-go)
+* [Jest default runner](https://github.com/facebook/jest/blob/03cce3d8718ad8c548406e35c8aa9b84b209d0e9/packages/jest-runner/src/index.js)
+* [Jest runner types](https://github.com/facebook/jest/blob/master/types/TestResult.js)
