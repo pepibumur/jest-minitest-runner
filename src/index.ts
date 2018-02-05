@@ -1,5 +1,2 @@
-
-
-const a = () => {
-
-}
+import MinitestRunner from "./minitest-runner";
+export = MinitestRunner;

@@ -5,15 +5,11 @@
     "test": "jest"
   },
   "jest": {
-    "moduleFileExtensions": [
-      "rb"
-    ],
+    "moduleFileExtensions": ["rb"],
     "runner": "<rootDir>/../build",
-    "testMatch": [
-      "**/?(*_)_test.rb"
-    ]
+    "testMatch": ["**/?(*_)test.rb"]
   },
-  "devDependencies": {
-    "jest": "^22.1.4"
+  "dependencies": {
+    "@types/jest": "^22.1.1"
   }
 }

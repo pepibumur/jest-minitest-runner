@@ -8,4 +8,8 @@ class ExampleTest < Minitest::Test
   def test_it_does_something_useful
     assert false
   end
+
+  def test_shakira
+    assert false
+  end
 end
