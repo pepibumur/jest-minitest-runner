@@ -1,5 +1,7 @@
 import * as Child from "child_process";
+import * as path from "path";
 import * as throat from "throat";
+import OutputParser, { OutputParsing } from "./output-parser";
 
 export class CancelRun extends Error {
   constructor(message?: string) {
@@ -8,20 +10,16 @@ export class CancelRun extends Error {
   }
 }
 
-interface TestReport {
-  passed: number;
-  failed: number;
-  failureMessage?: string;
-  duration: number;
-  end: number;
-  name: string;
-}
-
 export default class MinitestRunner {
   globalConfig: GlobalConfig;
+  outputParser: OutputParsing;
 
-  constructor(globalConfig: GlobalConfig) {
+  constructor(
+    globalConfig: GlobalConfig,
+    outputParser: OutputParsing = new OutputParser()
+  ) {
     this.globalConfig = globalConfig;
+    this.outputParser = outputParser;
   }
 
   async runTests(
@@ -40,7 +38,7 @@ export default class MinitestRunner {
             throw new CancelRun();
           }
           await onStart(test);
-          return this.runTest(test.path)
+          return this.runTest(test)
             .then(result => {
               onResult(test, result);
             })
@@ -50,15 +48,27 @@ export default class MinitestRunner {
     );
   }
 
-  private async runTest(testPath: string) {
+  private async runTest(test: Test) {
     const start = new Date();
     return new Promise((resolve, reject) => {
-      const child = Child.spawn("ruby", ["-I'lib:test'", testPath]);
+      const libPath = path.join(this.globalConfig.rootDir, "lib");
+      const testPath = path.join(this.globalConfig.rootDir, "test");
+      const child = Child.spawn(
+        "ruby",
+        [`-I"${libPath}:${testPath}"`, `"${test.path}"`],
+        {
+          cwd: this.globalConfig.rootDir,
+          shell: true
+        }
+      );
       let stdout = "";
       child.stdout.setEncoding("utf-8");
-      // eslint-disable-next-line no-return-assign
-      child.stdout.on("data", data => (stdout += data));
-      child.stdout.on("error", error => reject(error));
+      child.stdout.on("data", data => {
+        stdout += data;
+      });
+      child.stdout.on("error", error => {
+        reject(error);
+      });
       child.stdout.on("close", () => {
         let result: string[] = [];
         try {
@@ -66,66 +76,9 @@ export default class MinitestRunner {
         } catch (error) {
           reject(error);
         }
-        const report = this.parseMinitestOutput(testPath, start, result);
-        const end = new Date();
-
-        report.end = +end;
-        report.duration = +end - +start;
-
-        resolve({
-          console: null,
-          failureMessage: null,
-          numFailingTests: report.failed || 0,
-          numPassingTests: report.passed || 0,
-          numPendingTests: 0,
-          perfStats: {
-            end: report.end,
-            start
-          },
-          skipped: false,
-          snapshot: {
-            added: 0,
-            fileDeleted: false,
-            matched: 0,
-            unchecked: 0,
-            unmatched: 0,
-            updated: 0
-          },
-          sourceMaps: {},
-          testExecError: null,
-          testFilePath: testPath,
-          testResults: [this.result(report)]
-        });
+        const report = this.outputParser.parse(test, result, start);
+        resolve(report);
       });
     });
-  }
-
-  private parseMinitestOutput(
-    relativeTestPath: string,
-    start: Date,
-    output: string[]
-  ): TestReport {
-    const report = {
-      passed: 0,
-      failed: 0,
-      failureMessage: "",
-      duration: 0,
-      end: 0,
-      name: relativeTestPath
-    };
-    // TODO
-    return report;
-  }
-
-  private result(report: TestReport): AssertionResult {
-    return {
-      ancestorTitles: [],
-      duration: report.duration,
-      failureMessages: report.failed > 0 ? [report.failureMessage] : null,
-      fullName: report.name,
-      numPassingAsserts: report.failed === 0 ? 1 : 0,
-      status: report.failed === 0 ? "passed" : "failed",
-      title: report.name
-    };
   }
 }

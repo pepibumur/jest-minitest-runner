@@ -9,7 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const Child = require("child_process");
+const path = require("path");
 const throat = require("throat");
+const output_parser_1 = require("./output-parser");
 class CancelRun extends Error {
     constructor(message) {
         super(message);
@@ -18,8 +20,9 @@ class CancelRun extends Error {
 }
 exports.CancelRun = CancelRun;
 class MinitestRunner {
-    constructor(globalConfig) {
+    constructor(globalConfig, outputParser = new output_parser_1.default()) {
         this.globalConfig = globalConfig;
+        this.outputParser = outputParser;
     }
     runTests(tests, watcher, onStart, onResult, onFailure, options) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -30,7 +33,7 @@ class MinitestRunner {
                         throw new CancelRun();
                     }
                     yield onStart(test);
-                    return this.runTest(test.path)
+                    return this.runTest(test)
                         .then(result => {
                         onResult(test, result);
                     })
@@ -39,16 +42,25 @@ class MinitestRunner {
             }));
         });
     }
-    runTest(testPath) {
+    runTest(test) {
         return __awaiter(this, void 0, void 0, function* () {
             const start = new Date();
             return new Promise((resolve, reject) => {
-                const child = Child.spawn("ruby", ["-I'lib:test'", testPath]);
+                const libPath = path.join(this.globalConfig.rootDir, "lib");
+                const testPath = path.join(this.globalConfig.rootDir, "test");
+                console.log(this.globalConfig.rootDir);
+                const child = Child.spawn("ruby", [`-I"${libPath}:${testPath}"`, `"${test.path}"`], {
+                    cwd: this.globalConfig.rootDir,
+                    shell: true
+                });
                 let stdout = "";
                 child.stdout.setEncoding("utf-8");
-                // eslint-disable-next-line no-return-assign
-                child.stdout.on("data", data => (stdout += data));
-                child.stdout.on("error", error => reject(error));
+                child.stdout.on("data", data => {
+                    stdout += data;
+                });
+                child.stdout.on("error", error => {
+                    reject(error);
+                });
                 child.stdout.on("close", () => {
                     let result = [];
                     try {
@@ -57,60 +69,11 @@ class MinitestRunner {
                     catch (error) {
                         reject(error);
                     }
-                    const report = this.parseMinitestOutput(testPath, start, result);
-                    const end = new Date();
-                    report.end = +end;
-                    report.duration = +end - +start;
-                    resolve({
-                        console: null,
-                        failureMessage: null,
-                        numFailingTests: report.failed || 0,
-                        numPassingTests: report.passed || 0,
-                        numPendingTests: 0,
-                        perfStats: {
-                            end: report.end,
-                            start
-                        },
-                        skipped: false,
-                        snapshot: {
-                            added: 0,
-                            fileDeleted: false,
-                            matched: 0,
-                            unchecked: 0,
-                            unmatched: 0,
-                            updated: 0
-                        },
-                        sourceMaps: {},
-                        testExecError: null,
-                        testFilePath: testPath,
-                        testResults: [this.result(report)]
-                    });
+                    const report = this.outputParser.parse(test, result, start);
+                    resolve(report);
                 });
             });
         });
-    }
-    parseMinitestOutput(relativeTestPath, start, output) {
-        const report = {
-            passed: 0,
-            failed: 0,
-            failureMessage: "",
-            duration: 0,
-            end: 0,
-            name: relativeTestPath
-        };
-        // TODO
-        return report;
-    }
-    result(report) {
-        return {
-            ancestorTitles: [],
-            duration: report.duration,
-            failureMessages: report.failed > 0 ? [report.failureMessage] : null,
-            fullName: report.name,
-            numPassingAsserts: report.failed === 0 ? 1 : 0,
-            status: report.failed === 0 ? "passed" : "failed",
-            title: report.name
-        };
     }
 }
 exports.default = MinitestRunner;

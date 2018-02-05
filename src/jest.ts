@@ -27,7 +27,6 @@ interface TestRunnerOptions {
 type Status = "passed" | "failed" | "skipped" | "pending";
 
 interface Callsite {
-  column: number;
   line: number;
 }
 
@@ -45,7 +44,6 @@ interface AssertionResult {
 interface TestResult {
   displayName?: string;
   failureMessage?: string;
-  leaks: boolean;
   numFailingTests: number;
   numPassingTests: number;
   numPendingTests: number;
