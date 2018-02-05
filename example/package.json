@@ -1,0 +1,19 @@
+{
+  "name": "jest-runner-minitest-example",
+  "version": "0.1.0",
+  "scripts": {
+    "test": "jest"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "rb"
+    ],
+    "runner": "<rootDir>/../build",
+    "testMatch": [
+      "**/?(*_)_test.rb"
+    ]
+  },
+  "devDependencies": {
+    "jest": "^22.1.4"
+  }
+}
