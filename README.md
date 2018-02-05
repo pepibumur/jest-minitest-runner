@@ -8,6 +8,10 @@
 
 A Jest runner that can be used to run your Ruby minitest tests.
 
+## Example
+
+![](assets/example.gif)
+
 ## Usage
 
 ### Install
