@@ -48,7 +48,6 @@ class MinitestRunner {
             return new Promise((resolve, reject) => {
                 const libPath = path.join(this.globalConfig.rootDir, "lib");
                 const testPath = path.join(this.globalConfig.rootDir, "test");
-                console.log(this.globalConfig.rootDir);
                 const child = Child.spawn("ruby", [`-I"${libPath}:${testPath}"`, `"${test.path}"`], {
                     cwd: this.globalConfig.rootDir,
                     shell: true
