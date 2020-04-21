@@ -16,13 +16,19 @@
     "release": "yarn build && yarn publish"
   },
   "devDependencies": {
-    "@types/jest": "^22.1.1",
-    "@types/node": "^9.4.0",
-    "jest": "^22.1.4",
+    "@jest/test-result": "^25.4.0",
+    "@jest/types": "^25.4.0",
+    "@types/jest": "^25.2.1",
+    "@types/node": "^13.13.1",
+    "jest": "^25.4.0",
+    "jest-runner": "^25.4.0",
     "nodemon": "^1.14.11",
     "prettier": "1.10.2",
-    "ts-jest": "^22.0.1",
-    "typescript": "^2.6.2"
+    "ts-jest": "^25.4.0",
+    "typescript": "^3.4.0"
+  },
+  "peerDependencies": {
+    "throat": "^5.0.0"
   },
   "jest": {
     "moduleFileExtensions": [
