@@ -5,11 +5,15 @@
     "test": "jest --watch"
   },
   "jest": {
-    "moduleFileExtensions": ["rb"],
+    "moduleFileExtensions": [
+      "rb"
+    ],
     "runner": "<rootDir>/../build",
-    "testMatch": ["**/?(*_)test.rb"]
+    "testMatch": [
+      "**/?(*_)test.rb"
+    ]
   },
-  "dependencies": {
-    "@types/jest": "^22.1.1"
+  "devDependencies": {
+    "jest": "^25.4.0"
   }
 }

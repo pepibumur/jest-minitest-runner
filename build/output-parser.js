@@ -3,12 +3,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 class OutputParser {
     parse(test, output, startDate) {
         const result = {
+            leaks: false,
             numFailingTests: 0,
             numPassingTests: 0,
             numPendingTests: 0,
+            numTodoTests: 0,
+            openHandles: [],
             perfStats: {
                 start: +startDate,
-                end: +new Date()
+                end: +new Date(),
             },
             skipped: false,
             snapshot: {
@@ -18,12 +21,12 @@ class OutputParser {
                 unchecked: 0,
                 uncheckedKeys: [],
                 unmatched: 0,
-                updated: 0
+                updated: 0,
             },
             sourceMaps: {},
             testExecError: null,
             testFilePath: test.path,
-            testResults: []
+            testResults: [],
         };
         output.forEach((line, index, lines) => {
             if (line.includes("Failure:")) {
@@ -39,20 +42,21 @@ class OutputParser {
                     title = regexMatches[2];
                     testLine = Number(regexMatches[3]);
                 }
-                const testResult = {
+                const assertionResult = {
                     ancestorTitles: [],
                     failureMessages: [failingMessage],
                     fullName: failingTestLine,
                     numPassingAsserts: 1,
                     status: "failed",
-                    title: title
+                    title: title,
                 };
                 if (testLine) {
-                    testResult["location"] = {
-                        line: testLine
+                    assertionResult["location"] = {
+                        column: 0,
+                        line: testLine,
                     };
                 }
-                result.testResults.push(testResult);
+                result.testResults.push(assertionResult);
             }
             else {
                 const resultRegex = /([0-9]+) runs, ([0-9]+) assertions, ([0-9]+) failures, ([0-9]+) errors, ([0-9]+) skips/i;
@@ -71,7 +75,7 @@ class OutputParser {
                 fullName: test.path,
                 numPassingAsserts: 1,
                 status: "passed",
-                title: `All tests in ${test.path}`
+                title: `All tests in ${test.path}`,
             });
         }
         return result;
