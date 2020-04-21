@@ -5,7 +5,8 @@
     "outDir": "build",
     "lib": ["es6"],
     "sourceMap": false,
-    "rootDir": "src/"
+    "rootDir": "src/",
+    "esModuleInterop": true
   },
   "exclude": ["**/*.test.ts", "node_modules"]
 }
